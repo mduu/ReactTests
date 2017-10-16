@@ -3,19 +3,14 @@
 import * as React from 'react';
 import Adressdetails from './Adressdetails';
 import 'whatwg-fetch';
+import IAddress from './IAddress';
 
 export interface AddresslistProps {
   name: string;
 }
 
 interface State {
-  addresses: Address[];
-}
-
-interface Address {
-  id: string;
-  firstName: string;
-  lastName: string;
+  addresses: IAddress[];
 }
 
 export default class Addresslist extends React.Component<AddresslistProps, State> {
@@ -37,17 +32,24 @@ export default class Addresslist extends React.Component<AddresslistProps, State
     });
   }
 
-  setAddressesState(addresses: Address[]) {
+  setAddressesState(addresses: IAddress[]) {
     this.setState({addresses: addresses});
   }
 
-  componentWillMount() {
+  handleDetailsClick(addressId: string) {
+    // tslint:disable-next-line:no-console
+    console.log(`handleDetailsClick: addressId=${addressId}`);
+  }
+
+componentWillMount() {
     this.getAddresses();
   }
 
-  render() {
+render() {
     const { name } = this.props;
-
+    const { addresses } = this.state;
+    const self = this;
+    
     return (
       <div className="addresslist container">
         <div className="listPanel">
@@ -60,10 +62,19 @@ export default class Addresslist extends React.Component<AddresslistProps, State
                 <th>Id</th>
                 <th>Firstname</th>
                 <th>Lastname</th>
+                <th />
               </tr>
             </thead>
 
             <tbody>
+                {addresses.map(function(address: IAddress, index: number){
+                return <tr key={index}>
+                  <td>{address.Id}</td>
+                  <td>{address.Firstname}</td>
+                  <td>{address.Lastname}</td>
+                  <td><button onClick={(e) => self.handleDetailsClick(address.Id)}>Details</button></td>
+                </tr>;
+              })}
             </tbody>
           </table>
         </div>
